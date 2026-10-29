@@ -1,4 +1,4 @@
-"use strict";
+﻿"use strict";
 const fs = require("node:fs");
 const path = require("node:path");
 const express = require("express");
@@ -32,9 +32,6 @@ function createApp({ db = openDb() } = {}) {
     res.json({ status: "ok", timestamp: new Date().toISOString(), totalPapers: store.all().length });
   };
 
-  app.get("/", (_req, res) => {
-    res.json({ service: "ResearchAI API", status: "ok", health: "/api/health" });
-  });
   app.get("/api", (_req, res) => {
     res.json({ service: "ResearchAI API", status: "ok", health: "/api/health" });
   });
@@ -50,11 +47,15 @@ function createApp({ db = openDb() } = {}) {
   api.use(notFound);
   app.use("/api", api);
 
-  // Serve the built React app (production): `npm run build` then `npm start`.
+  // Serve the built React app (production)
   const dist = config.frontendDist;
   if (fs.existsSync(path.join(dist, "index.html"))) {
     app.use(express.static(dist));
     app.get(/^(?!\/api\/).*/, (_req, res) => res.sendFile(path.join(dist, "index.html")));
+  } else {
+    app.get("/", (_req, res) => {
+      res.json({ service: "ResearchAI API", status: "ok", health: "/api/health" });
+    });
   }
 
   app.use(errorHandler);
