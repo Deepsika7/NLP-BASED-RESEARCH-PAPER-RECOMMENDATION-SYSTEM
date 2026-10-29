@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: researchai
+    env: node
+    plan: free
+    buildCommand: npm install && npm run install:all && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://researchai.onrender.com
+      - key: TRUST_PROXY
+        value: "true"
